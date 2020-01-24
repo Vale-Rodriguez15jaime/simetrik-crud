@@ -1,32 +1,38 @@
-import React from "react";
+import React, {Suspense, lazy} from "react";
 import Albums from "./pages/Albums";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Home from "./pages/Home";
-import AdminArticles from './pages/AdminArticles'
+//import Home from "./pages/Home";
+//import AdminArticles from './pages/AdminArticles'
 import { Provider } from "react-redux";
 import store from "./store";
-import Articles from "./pages/Articles";
-import EditArticles from "./pages/editArticle";
-import NewArticle from "./pages/NewArticle";
-import NewUser from "./pages/NewUser";
-import Users from "./pages/Users";
-import EditUser from "./pages/editUser";
-import NewComment from "./pages/NewComment";
-import EditComment from "./pages/editComment";
-import Comments from "./pages/Comments";
-import NewAlbum from "./pages/NewAlbum";
-import EditAlbum from "./pages/editAlbum";
-import Photos from "./pages/Photos";
-import NewPhoto from "./pages/NewPhoto";
-import EditPhoto from "./pages/editPhoto";
-import DetailAlbum from "./pages/DetailAlbum";
-import EditOnline from "./components/EditOnline";
+
+
+const EditArticles = lazy(()=> import( "./pages/editArticle"));
+const NewArticle = lazy(()=> import( "./pages/NewArticle"));
+const NewUser = lazy(()=> import( "./pages/NewUser"));
+const Users = lazy(()=> import( "./pages/Users"));
+const EditUser = lazy(()=> import( "./pages/editUser"));
+const NewComment = lazy(()=> import( "./pages/NewComment"));
+const EditComment = lazy(()=> import( "./pages/editComment"));
+const Comments = lazy(()=> import( "./pages/Comments"));
+const NewAlbum = lazy(()=> import( "./pages/NewAlbum"));
+const EditAlbum = lazy(()=> import( "./pages/editAlbum"));
+const Photos = lazy(()=> import( "./pages/Photos"));
+const NewPhoto = lazy(()=> import( "./pages/NewPhoto"));
+
+const EditPhoto = lazy(()=> import('./pages/editPhoto'));
+const DetailAlbum = lazy(()=> import('./pages/DetailAlbum'));
+const EditOnline = lazy(()=> import('./components/EditOnline'));
+const Articles = lazy(()=> import('./pages/Articles'));
+const AdminArticles = lazy(() => import('./pages/AdminArticles')) 
+const Home = lazy(()=> import('./pages/Home'))
 
 function App() {
   return (
     <Router>
       <Provider store={store}>
+        <Suspense fallback={<div>Loading</div>}>
         <div>
           <Switch>
             <Route exact path='/' component={Home} />
@@ -62,6 +68,7 @@ function App() {
             <Route exact path='/editor' component={EditOnline} />
           </Switch>
         </div>
+        </Suspense>
       </Provider>
     </Router>
   );
