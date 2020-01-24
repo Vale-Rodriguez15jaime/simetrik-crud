@@ -21,6 +21,7 @@ import Photos from "./pages/Photos";
 import NewPhoto from "./pages/NewPhoto";
 import EditPhoto from "./pages/editPhoto";
 import DetailAlbum from "./pages/DetailAlbum";
+import EditOnline from "./components/EditOnline";
 
 function App() {
   return (
@@ -57,7 +58,8 @@ function App() {
 
             <Route exact path='/foto' component={Photos} />
             <Route exact path='/foto/nuevo' component={NewPhoto} />
-            <Route exact path='/foto/editar/:id' component={EditPhoto} />
+            <Route exact path='/foto/editar/:id' component={EditPhoto} />\
+            <Route exact path='/editor' component={EditOnline} />
           </Switch>
         </div>
       </Provider>

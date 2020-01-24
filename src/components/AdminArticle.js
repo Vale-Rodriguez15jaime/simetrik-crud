@@ -1,5 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import Swals from "sweetalert2";
 import Loader from "react-loader-spinner";
 import withReactContent from "sweetalert2-react-content";

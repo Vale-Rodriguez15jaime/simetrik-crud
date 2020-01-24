@@ -17,11 +17,13 @@ import {
 } from "react-icons/fa";
 
 class TodoView extends React.Component {
+  
   state = {
     saving: false,
     error: false
   };
   typingTimer = undefined;
+  
   typing = () => {
     clearTimeout(this.typingTimer);
     this.typingTimer = setTimeout(this.update, 1000);

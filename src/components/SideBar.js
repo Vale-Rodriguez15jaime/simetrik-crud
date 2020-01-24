@@ -28,6 +28,9 @@ const SideBar = () => {
           <li>
             <a href='/album'>Administración Albums</a>
           </li>
+          <li>
+            <a href='/editor'>Editor de Texto en Linea</a>
+          </li>
         </ul>
       </aside>
     </div>
