@@ -1,12 +1,13 @@
 import React from "react";
-import { UnControlled as CodeMirror } from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import Layout from "./Layout";
-import { FaFileDownload } from "react-icons/fa";
+import { FaFileDownload, FaCode, FaCheck } from "react-icons/fa";
 import "../styles/styles.sass";
 import "codemirror/lib/codemirror.css";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/theme/material.css";
-
+import { ToastsStore } from "react-toasts";
+const jbeautify = require("js-beautify").js;
 require("codemirror/mode/sql/sql");
 require("codemirror/addon/hint/javascript-hint.js");
 require("codemirror/addon/hint/html-hint.js");
@@ -15,7 +16,19 @@ require("codemirror/addon/hint/show-hint.js");
 require("codemirror/addon/hint/css-hint.js");
 require("codemirror/mode/javascript/javascript");
 require("codemirror/mode/htmlmixed/htmlmixed");
+
+const hbeautify = require("js-beautify").html;
+
 class EditOnline extends React.Component {
+  componentDidMount() {
+    if (document.getElementById("jsonlint") === null) {
+      var s = document.createElement("script");
+      s.id = "jsonlint";
+      s.type = "text/javascript";
+      s.src = "/jsonlint.js";
+      document.body.appendChild(s);
+    }
+  }
   state = {
     code: "",
     mode: "javascript",
@@ -33,15 +46,68 @@ class EditOnline extends React.Component {
     this.setState({ code: text, file: selectorFiles, fileName: newName });
   }
 
+  formatCode = () => {
+    let textCode = this.state.code;
+
+    switch (this.state.mode) {
+      case "javascript":
+        textCode = jbeautify(textCode, {
+          indent_size: 2,
+          space_in_empty_paren: true
+        });
+
+        break;
+      case "htmlmixed":
+        textCode = hbeautify(textCode, {
+          indent_size: 2,
+          space_in_empty_paren: true
+        });
+        break;
+      default:
+        break;
+    }
+    this.setState({
+      code: textCode
+    });
+  };
+  validateCode = (e, showValid = true) => {
+    switch (this.state.mode) {
+      case "javascript":
+        try {
+          var result = window.jsonlint.parse(this.state.code);
+          if (result) {
+            if (showValid) {
+              ToastsStore.success(
+                "Tu codigo JSON es valido! :)",
+                5000,
+                "has-text-white"
+              );
+            }
+            return true;
+          }
+        } catch (e) {
+          ToastsStore.error(e.message, 5000, "has-text-white");
+          return false;
+        }
+        break;
+      default:
+        break;
+    }
+    return false;
+  };
   changeMode = e => {
     let mode = "js";
+
     switch (e.target.value) {
       case "htmlmixed":
         mode = "html";
+
         break;
       case "sql":
         mode = "sql";
+
         break;
+
       default:
         break;
     }
@@ -51,22 +117,35 @@ class EditOnline extends React.Component {
     });
   };
   saveFile = () => {
-    let a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    let blob = new File(
-      [this.state.code],
-      this.state.fileName + "." + this.state.fileType,
-      {
-        type: "text/plain;charset=utf-8"
-      }
-    );
-    let url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = blob.name;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
+    this.formatCode();
+    if (!this.validateCode(null, false)) {
+      return false;
+    }
+    let vm = this;
+    setTimeout(() => {
+      let a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      let blob = new File(
+        [vm.state.code],
+        vm.state.fileName + "." + vm.state.fileType,
+        {
+          type: "text/plain;charset=utf-8"
+        }
+      );
+      let url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = blob.name;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+      ToastsStore.success(
+        "¡Se ha descargado tu codigo!",
+        5000,
+        "has-text-white"
+      );
+    }, 200);
   };
   toggleReadOnly = () => {
     this.setState({
@@ -79,9 +158,14 @@ class EditOnline extends React.Component {
       readOnly: this.state.readOnly,
       mode: this.state.mode,
       theme: "material",
-      extraKeys: { "Shift-Space": "autocomplete" },
+      extraKeys: {
+        "Shift-Space": "autocomplete",
+        "Shift-tab": "autoFormatSelection"
+      },
+
       hint: "CodeMirror.hint." + this.state.mode
     };
+
     return (
       <Layout>
         <div>
@@ -143,14 +227,47 @@ class EditOnline extends React.Component {
             <button className='button is-success' onClick={this.saveFile}>
               <FaFileDownload /> Descargar archivo
             </button>
+            <button
+              className='button is-success'
+              onClick={this.formatCode}
+              style={{
+                margin: "0px 0px 0px 20px"
+              }}>
+              <FaCode /> Formatear Codigo
+            </button>
+            <button
+              className='button is-success'
+              onClick={this.validateCode}
+              style={{
+                margin: "0px 0px 0px 20px"
+              }}>
+              <FaCheck /> Validar Codigo
+            </button>
           </div>
           <CodeMirror
             value={this.state.code}
             options={options}
             ref='codeMirrorInstance'
-            onChange={(editor, data, value) => {
+            onKeyDown={(code, e) => {
+              if (
+                window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey
+              ) {
+                if (e.keyCode === 83) {
+                  e.preventDefault();
+                  this.saveFile();
+                } else if (e.keyCode === 70) {
+                  e.preventDefault();
+                  this.formatCode();
+                } else if (e.keyCode === 79) {
+                  e.preventDefault();
+                  document.getElementById("dileElem").click();
+                }
+              }
+            }}
+            onBeforeChange={(editor, data, value) => {
               this.setState({ code: value });
             }}
+            onChange={(editor, data, value) => {}}
           />
 
           <div style={{ marginTop: 10 }}>

@@ -9,6 +9,7 @@
     "amd-loader": "0.0.8",
     "axios": "^0.19.1",
     "bulma": "^0.8.0",
+    "js-beautify": "^1.10.3",
     "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "node-sass": "^4.13.1",
@@ -49,6 +50,8 @@
     ]
   },
   "devDependencies": {
-    "react-codemirror2": "^6.0.0"
+    "jsonlint": "^1.6.3",
+    "react-codemirror2": "^6.0.0",
+    "react-toasts": "^3.0.6"
   }
 }
