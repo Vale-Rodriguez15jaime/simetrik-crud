@@ -8,6 +8,7 @@ Librerias JS utilizadas
 "react-redux": "^7.1.3",
 "redux": "^4.0.5",
 "redux-thunk": "^2.3.0",
+"react-codemirror": "^1.0.0",
 ```
 
 Librerias SASS utilizadas
