@@ -6,7 +6,6 @@ import alertaReducer from "./alertaReducer";
 import usersReducer from "./usersReducer";
 import commentReducer from "./commentReducer";
 import photoReducers from "./photoReducers";
-import editorReducer from "./editorReducer"
 
 export default combineReducers({
   album: albumReducer,
@@ -14,7 +13,5 @@ export default combineReducers({
   alerta: alertaReducer,
   user: usersReducer,
   comment: commentReducer,
-  photo: photoReducers,
-  editor: editorReducer
-
+  photo: photoReducers
 });
