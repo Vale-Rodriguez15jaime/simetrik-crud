@@ -169,7 +169,7 @@ class EditOnline extends React.Component {
     return (
       <Layout>
         <div>
-          <p>EDITOR</p>
+          <p>EDITOR ONLINE</p>
           <div className='ContainerEdit'>
             <span>Modo de edición: </span>
             <div className='select is-info pd Container__option'>
