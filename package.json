@@ -7,7 +7,7 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "amd-loader": "0.0.8",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "bulma": "^0.8.0",
     "js-beautify": "^1.10.3",
     "lodash.debounce": "^4.0.8",
